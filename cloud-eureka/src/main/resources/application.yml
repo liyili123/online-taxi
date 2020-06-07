@@ -3,16 +3,17 @@ spring:
     name: cloud-eureka
 eureka:
   instance:
-    prefer-ip-address: true
-    appname: cloud-eureka
+#    prefer-ip-address: true
+#    ip-address: 127.0.0.1
+
 
   client:
     register-with-eureka: false
-    fetch-registry: false
-    service-url:
-      # 5 24
-      defaultZone: http://eureka-7900:7900/eureka/,http://eureka-7901:7901/eureka/,http://eureka-7902:7902/eureka/
-      #,
+    fetch-registry: true
+#    service-url:
+#      # 5 24
+#      defaultZone: http://eureka-7900:7900/eureka/,http://eureka-7901:7901/eureka/,http://eureka-7902:7902/eureka/
+#      #,
   server:
     # 自我保护看自己情况
     enable-self-preservation: true
@@ -26,6 +27,8 @@ eureka:
     response-cache-update-interval-ms: 1000
 
 
+
+
 ---
 spring:
   profiles: 7900
@@ -34,6 +37,13 @@ server:
 eureka:
   instance:
     hostname: eureka-7900
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      # 5 24
+      defaultZone: http://eureka-7900:7900/eureka/
+
 
 ---
 spring:
@@ -43,7 +53,12 @@ server:
 eureka:
   instance:
     hostname: eureka-7901
-
+  client:
+    register-with-eureka: false
+    fetch-registry: true
+    service-url:
+      # 5 24
+      defaultZone: http://eureka-7900:7900/eureka/
 ---
 spring:
   profiles: 7902
@@ -52,3 +67,9 @@ server:
 eureka:
   instance:
     hostname: eureka-7902
+  client:
+    register-with-eureka: false
+    fetch-registry: true
+    service-url:
+      # 5 24
+      defaultZone: http://eureka-7900:7902/eureka/

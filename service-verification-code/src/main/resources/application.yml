@@ -1,0 +1,16 @@
+
+server:
+  port: 8012
+
+spring:
+  application:
+    name: service-verification-code
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-7900:7900/eureka/
+    enabled: true
+  instance:
+    lease-renewal-interval-in-seconds: 1
+    lease-expiration-duration-in-seconds: 1

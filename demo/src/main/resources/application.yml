@@ -1,4 +1,11 @@
+
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:7900/eureka/
+      defaultZone: http://localhost:7901/eureka/
+    enabled: true
+server:
+  port: 9001
+spring:
+  application:
+    name: demo

@@ -1,0 +1,17 @@
+
+server:
+  port: 9100
+
+spring:
+  application:
+    name: online-taxi-zuul
+
+#注册中心
+eureka:
+  client:
+    #设置服务注册中心的URL
+    service-url:
+      defaultZone: http://eureka-7900:7900/eureka/
+  instance:
+    hostname: localhost
+    instance-id: online-taxi-zuul
