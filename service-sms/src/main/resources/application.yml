@@ -1,6 +1,4 @@
-server:
-    #服务端口
-  port: 8003
+
 
 spring:
   application:
@@ -48,3 +46,28 @@ eureka:
       #,http://localhost:7901/eureka/,http://localhost:7902/eureka/
   instance:
     lease-renewal-interval-in-seconds: 30
+
+
+---
+spring:
+  profiles: v1
+
+eureka:
+  instance:
+    metadata-map:
+      version: v1
+      a: a1
+server:
+    #服务端口
+  port: 8003
+---
+spring:
+  profiles: v2
+
+eureka:
+  instance:
+    metadata-map:
+      version: v2
+server:
+    #服务端口
+  port: 8004

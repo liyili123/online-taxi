@@ -1,4 +1,3 @@
-
 server:
   port: 9100
 
@@ -6,12 +5,83 @@ spring:
   application:
     name: online-taxi-zuul
 
-#ע������
+    #数据库连接配置
+  datasource:
+         #配置当前使用的数据源的操作类型
+    type: com.alibaba.druid.pool.DruidDataSource
+         #配置MySQL的驱动程序类
+    driver-class-name: com.mysql.cj.jdbc.Driver
+         #数据库连接地址
+    url: jdbc:mysql://localhost:3306/taxi?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+         #数据库连接用户名
+    username: root
+         #数据库连接密码
+    password: root
+         #进行数据库连接池的配置
+    dbcp2:
+             #初始化提供的连接数
+      initial-size: 5
+             #数据库连接池的最小维持连接数
+      min-idle: 5
+             #最大的连接数
+      max-total: 5
+             #等待连接获取的最大超时时间
+      max-wait-millis: 200
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+
+#mybatis配置
+mybatis:
+  mapper-locations:
+  - classpath:mapper/*.xml
+
+
+
+
 eureka:
   client:
-    #���÷���ע�����ĵ�URL
     service-url:
       defaultZone: http://eureka-7900:7900/eureka/
+    enabled: true
   instance:
     hostname: localhost
     instance-id: online-taxi-zuul
+zuul:
+    #一下配置，表示忽略下面的值向微服务传播，以下配置为空表示：所有请求头都透传到后面微服务。
+#  sensitive-headers:
+  routes:
+    xxx:
+      path: /a-forward/**
+      url: forward:/myController
+
+#     配合 龙哥,后面两个*号，表示 所有路径都转发，一个* 表示 只转发一级。
+    service-sms: /zuul-api-driver1/**
+    # 配合 风雨冷人
+    xxxx: /zuul-api-driver/**
+    api-passenger: /api-passenger-lyl/**
+    #此处名字随便取
+#    custom-zuul-name:
+#      path: /zuul-api-driver/**
+#      url: http://localhost:8080/
+#service-sms:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.mashibing.cloudzuul.gray.GrayRule
+
+
+
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      ##默认是never
+      show-details: ALWAYS
+      enabled: true
+    routes:
+      enabled: true

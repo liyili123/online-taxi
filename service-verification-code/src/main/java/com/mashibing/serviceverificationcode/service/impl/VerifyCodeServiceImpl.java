@@ -36,8 +36,8 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         //校验 发送时限，三挡验证，不能无限制发短信
 //        checkSendCodeTimeLimit(phoneNumber);
 
-        // 0.9*9=8.1+1 9,去掉首位为0的情况。
-        String code = String.valueOf((int)((Math.random()*9+1)*Math.pow(10,5)));
+        // 0.9*9=8.1+1 9,去掉首位为0的情况。 0.11225478552211(0.0-<1)
+        String code = String.valueOf((int)((Math.random() * 9 + 1) * Math.pow(10,5)));
 
         /**
          * 有人用这种写法。生成6位code，错误用法，虽然大部分情况下结果正确，但不能这么用，偶尔位数不够？
@@ -50,10 +50,12 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         //存redis，2分钟过期
         BoundValueOperations<String, String> codeRedis = redisTemplate.boundValueOps(key);
 
-        Boolean aBoolean = codeRedis.setIfAbsent(code);
-        if (aBoolean){
-            codeRedis.expire(2,TimeUnit.MINUTES);
-        }
+//        Boolean aBoolean = codeRedis.setIfAbsent(code);
+//        if (aBoolean){
+//            codeRedis.expire(2,TimeUnit.MINUTES);
+//        }
+        codeRedis.set(code,2,TimeUnit.MINUTES);
+//        codeRedis.expire(2,TimeUnit.MINUTES);
 
         //返回
         VerifyCodeResponse result = new VerifyCodeResponse();
@@ -137,22 +139,29 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 
 // ----------------------------------------------------------------------
 ////        System.out.println(Math.random());
-//        int sum = 10000000;
-////        int sum = Integer.MAX_VALUE;
-//        System.out.println(sum);
+        long sum = 1000000000L;
+//        int sum = Integer.MAX_VALUE;
+        System.out.println(sum);
 //        long start = System.currentTimeMillis();
 //        for (int i = 0; i < sum; i++) {
 //            String a = (Math.random() + "").substring(2,8);
 //        }
 //        System.out.println("字符串截取时间："+(System.currentTimeMillis() - start));
-//
-//        long start1 = System.currentTimeMillis();
-//        for (int i = 0; i < sum; i++) {
-//            String a = String.valueOf((int)((Math.random()*9)*Math.pow(10,5)));
-//        }
-//        System.out.println("字符串求乘方："+(System.currentTimeMillis() - start1));
 
+        long start1 = System.currentTimeMillis();
+        for (int i = 0; i < sum; i++) {
+            String a = String.valueOf((int)((Math.random()*9)*Math.pow(10,5)));
+        }
+        System.out.println("字符串求乘方："+(System.currentTimeMillis() - start1));
 
+        long start2 = System.currentTimeMillis();
+        for (int i = 0; i < sum; i++) {
+            String a = String.valueOf((int)(Math. random()*900000)+100000);
+        }
+        System.out.println("感悟方案："+(System.currentTimeMillis() - start2));
+
+        String a = String.valueOf((int)(Math. random()*900000)+100000) ;
+        System.out.println(a);
 
     }
 }
