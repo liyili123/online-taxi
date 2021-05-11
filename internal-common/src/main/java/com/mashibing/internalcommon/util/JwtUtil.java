@@ -28,6 +28,7 @@ public class JwtUtil {
         String compactJws = Jwts.builder()
                 .setSubject(subject)
                 .setIssuedAt(issueDate)
+//                .setExpiration(issueDate + xxx)
                 .signWith(io.jsonwebtoken.SignatureAlgorithm.HS512, secret)
                 .compact();
         return compactJws;
@@ -42,7 +43,7 @@ public class JwtUtil {
      */
     public static JwtInfo parseToken(String token) {
         try {
-
+//            xxxx.xxxxx.xxxxxxxx
             Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
             if (claims != null){
                 JwtInfo ji = new JwtInfo();
@@ -61,6 +62,7 @@ public class JwtUtil {
     public static void main(String[] args) {
         String subject = "1";
         String token = createToken(subject,new Date());
+        System.out.println("token:"+token);
 //        System.out.println(token);
 //        try {
 //			Thread.sleep(10010);

@@ -46,4 +46,11 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
         return ResponseResult.success("");
 
     }
+
+    @Override
+    public ResponseResult verify(String phoneNumber, String code) {
+
+        return serviceVerificationCodeRestTemplateService.verifyCode(IdentityConstant.PASSENGER,phoneNumber,code);
+    }
+
 }

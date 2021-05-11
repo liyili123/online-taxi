@@ -16,8 +16,16 @@ spring:
     name: api-passenger
 logging:
   level:
-    root: debug
+    root: info
 #ribbon:
 #  eager-load:
 #    enabled: true
 #    clients: demo
+
+# 配置灰度 发布
+#service-sms:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.mashibing.apipassenger.gray.GrayRule
+
+
+

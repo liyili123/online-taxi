@@ -1,26 +1,18 @@
 package com.mashibing.cloudzuul.filter;
 
-import com.mashibing.internalcommon.constant.RedisKeyPrefixConstant;
 import com.mashibing.internalcommon.util.JwtInfo;
 import com.mashibing.internalcommon.util.JwtUtil;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
-import net.sf.json.JSONObject;
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
-import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 鉴权filter
@@ -41,19 +33,19 @@ public class AuthFilter extends ZuulFilter {
 		RequestContext requestContext = RequestContext.getCurrentContext();
 		HttpServletRequest request = requestContext.getRequest();
 		
-		String uri = request.getRequestURI();
-		System.out.println("来源uri："+uri);
-		//只有此接口/api-passenger/api-passenger-gateway-test/hello才被拦截
+//		String uri = request.getRequestURI();
+//		System.out.println("来源uri："+uri);
+//		//只有此接口/api-passenger/api-passenger-gateway-test/hello才被拦截
 //		String checkUri = "/api-passenger/api-passenger-gateway-test/hello";
 //		if(checkUri.equalsIgnoreCase(uri)) {
 //			return true;
 //		}
-		// 测试路径
+////		 测试路径
 //		if(uri.contains("api-driver")) {
 //			return true;
 //		}
 		
-		return true;
+		return false;
 	}
 	
 	/**
@@ -62,12 +54,14 @@ public class AuthFilter extends ZuulFilter {
 	@Override
 	public Object run() throws ZuulException {
 
+
+
 		System.out.println("auth 拦截");
 		//获取上下文（重要，贯穿 所有filter，包含所有参数）
 		RequestContext requestContext = RequestContext.getCurrentContext();
 		HttpServletRequest request = requestContext.getRequest();
 
-        parseBody(request);
+//        parseBody(request);
 
 		String token = request.getHeader("Authorization");
 		if (StringUtils.isNotBlank(token)){
@@ -77,14 +71,24 @@ public class AuthFilter extends ZuulFilter {
                 String tokenUserId = tokenJwtInfo.getSubject();
                 Long tokenIssueDate = tokenJwtInfo.getIssueDate();
 
-                BoundValueOperations<String, String> stringStringBoundValueOperations = redisTemplate.boundValueOps(RedisKeyPrefixConstant.PASSENGER_LOGIN_TOKEN_APP_KEY_PRE + tokenUserId);
-                String redisToken = stringStringBoundValueOperations.get();
-                if (redisToken.equals(token)){
-                    return null;
-                }
+				requestContext.set("userId",tokenUserId);
+
+				return null;
+
+
+
+
+//                BoundValueOperations<String, String> stringStringBoundValueOperations = redisTemplate.boundValueOps(RedisKeyPrefixConstant.PASSENGER_LOGIN_TOKEN_APP_KEY_PRE + tokenUserId);
+//                String redisToken = stringStringBoundValueOperations.get();
+//                if (redisToken.equals(token)){
+//
+//
+//                    return null;
+//                }
             }
         }
 
+        // 不往下走，还走剩下的过滤器，但是不向后面的服务转发。
         requestContext.setSendZuulResponse(false);
         requestContext.setResponseStatusCode(HttpStatus.UNAUTHORIZED.value());
         requestContext.setResponseBody("认证失败");
@@ -110,21 +114,21 @@ public class AuthFilter extends ZuulFilter {
 	}
 
 
-	private void parseBody(HttpServletRequest request){
-        Map<String,Object> params = new HashMap<String, Object>();
-        BufferedReader br;
-        try {
-            br = request.getReader();
-            String str, wholeStr = "";
-            while((str = br.readLine()) != null){
-                wholeStr += str;
-            }
-            if(StringUtils.isNotEmpty(wholeStr)){
-                JSONObject jsonObject = JSONObject.fromObject(wholeStr);
-            }
-        } catch (IOException e1) {
-
-        }
-
-    }
+//	private void parseBody(HttpServletRequest request){
+//        Map<String,Object> params = new HashMap<String, Object>();
+//        BufferedReader br;
+//        try {
+//            br = request.getReader();
+//            String str, wholeStr = "";
+//            while((str = br.readLine()) != null){
+//                wholeStr += str;
+//            }
+//            if(StringUtils.isNotEmpty(wholeStr)){
+//                JSONObject jsonObject = JSONObject.fromObject(wholeStr);
+//            }
+//        } catch (IOException e1) {
+//
+//        }
+//
+//    }
 }
